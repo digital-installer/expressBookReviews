@@ -1,4 +1,5 @@
 const express = require('express');
+const axios = require('axios');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
@@ -84,6 +85,71 @@ public_users.get('/review/:isbn',function (req, res) {
   const isbn = req.params.isbn;
   res.send(books[isbn].reviews)
 });
+
+
+//function get axios response using Promises and callback function
+async function getBooksList()
+{
+  const url = "https://akinbamigben-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/";
+  let listOfAllBooks = [];
+
+  const response  = await axios.get(url);
+  listOfAllBooks = response.data;
+  return listOfAllBooks;
+}
+
+//function get book by ISBN
+ function getBookByISBN()
+{
+  const isbn = 1;
+  const url = `https://akinbamigben-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/isbn/${isbn}`;
+  let bookObjectByISBN = {};
+
+  axios.get(url).then((response) => {
+    bookObjectByISBN = response.data;
+    return bookObjectByISBN;
+  }).catch((error) => {
+    console.log(error);
+    bookObjectByISBN = {};
+    return bookObjectByISBN;
+  });
+}
+
+//function get book by Author
+function getBookByAuthor()
+{
+  const author = "Chinua Achebe";
+  const url = `https://akinbamigben-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/author/${author}`;
+  let bookObjectByAuthor = {};
+
+  axios.get(url).then((response) => {
+    bookObjectByAuthor = response.data;
+    return bookObjectByAuthor;
+  }).catch((error) => {
+    console.log(error);
+    bookObjectByAuthor = {};
+    return bookObjectByAuthor;
+  });
+}
+
+//function get book by Title
+function getBookByTitle()
+{
+  const title = "Fairy tales";
+  const url = `https://akinbamigben-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/title/${title}`;
+  let bookObjectByTitle = {};
+
+   axios.get(url).then((response) => {
+    bookObjectByTitle = response.data;
+    return bookObjectByTitle;
+  }).catch((error) => {
+    console.log(error);
+    bookObjectByTitle = {};
+    return bookObjectByTitle;
+  });
+}
+
+
 
 
 module.exports.general = public_users;

@@ -59,7 +59,6 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     if (book) { //Check is book exists
         let review = req.body.review;
         books[isbn].reviews[username] = {"review":review};
-        console.log("books ====> ", books);
 
         res.status(200).json({book: books[isbn],  message: `Book with isbn ${isbn} updated.` });
     }
@@ -76,11 +75,7 @@ regd_users.delete("/auth/review/:isbn", (req, res) => {
     const isbn = req.params.isbn;
     if (books[isbn]) { //Check is book exists
         let review = req.body.review;
-        console.log("books before delete ====> ", books);
         delete books[isbn].reviews[username];
-        console.log("books after delete ====> ", books);
-
-
         res.status(200).json({book: books[isbn],  message: `Book with isbn ${isbn} updated.` });
     }
     else{
