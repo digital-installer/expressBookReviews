@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 let books = require("./booksdb.js");
+const fs = require("fs");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
@@ -55,10 +56,14 @@ public_users.get('/author/:author',function (req, res) {
   {
       if (books[book].author === author)
       {
+        books[book].isbn = book;
+        delete books[book].title;
         bookListByAuthor.push(books[book]);
       }
 
   }
+
+
   res.send({booksbyauthor: bookListByAuthor});
 });
 
@@ -67,10 +72,13 @@ public_users.get('/title/:title',function (req, res) {
   //Write your code here
   const title = req.params.title;
   const bookListByTitle = [];
+
   for (const book in books)
   {
     if (books[book].title === title)
     {
+      books[book].isbn = book;
+      delete books[book].title;
       bookListByTitle.push(books[book]);
     }
 
@@ -86,67 +94,73 @@ public_users.get('/review/:isbn',function (req, res) {
   res.send(books[isbn].reviews)
 });
 
+let booksAsync;
 
 //function get axios response using Promises and callback function
-async function getBooksList()
-{
-  const url = "https://akinbamigben-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/";
-  let listOfAllBooks = [];
 
-  const response  = await axios.get(url);
-  listOfAllBooks = response.data;
-  return listOfAllBooks;
-}
+booksAsync = new Promise((resolve , reject) =>
+ {
+    try {
+      resolve(books);
+    }
+    catch(err)
+    {
+      reject(err)
+    }
+});
 
-//function get book by ISBN
- function getBookByISBN()
+//async function get book by ISBN
+ const  getBookByISBN = async (isbn) =>
 {
-  const isbn = 1;
-  const url = `https://akinbamigben-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/isbn/${isbn}`;
   let bookObjectByISBN = {};
-
-  axios.get(url).then((response) => {
-    bookObjectByISBN = response.data;
+  let books = await booksAsync();
+  if(books)
+  {
+    bookObjectByISBN = books[isbn];
     return bookObjectByISBN;
-  }).catch((error) => {
-    console.log(error);
-    bookObjectByISBN = {};
-    return bookObjectByISBN;
-  });
+  }
 }
 
 //function get book by Author
-function getBookByAuthor()
+const getBookByAuthor = async (author) =>
 {
-  const author = "Chinua Achebe";
-  const url = `https://akinbamigben-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/author/${author}`;
-  let bookObjectByAuthor = {};
+  let bookListByAuthor = {};
+  let books = await booksAsync();
+  if(books)
+  {
+    for (const book in books)
+    {
+      if (books[book].author === author)
+      {
+        bookListByAuthor.push(books[book]);
+      }
 
-  axios.get(url).then((response) => {
-    bookObjectByAuthor = response.data;
-    return bookObjectByAuthor;
-  }).catch((error) => {
-    console.log(error);
-    bookObjectByAuthor = {};
-    return bookObjectByAuthor;
-  });
+    }
+  }
+
+  return bookListByAuthor;
+
+
 }
 
 //function get book by Title
-function getBookByTitle()
+const getBookByTitle  =  async (title) =>
 {
-  const title = "Fairy tales";
-  const url = `https://akinbamigben-5000.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/title/${title}`;
-  let bookObjectByTitle = {};
+  const bookListByTitle = [];
+  let books = await booksAsync();
+  if(books)
+  {
+    for (const book in books)
+    {
+      if (books[book].title === title)
+      {
+        bookListByTitle.push(books[book]);
+      }
+    }
+  }
 
-   axios.get(url).then((response) => {
-    bookObjectByTitle = response.data;
-    return bookObjectByTitle;
-  }).catch((error) => {
-    console.log(error);
-    bookObjectByTitle = {};
-    return bookObjectByTitle;
-  });
+  return bookListByTitle;
+
 }
 
 
