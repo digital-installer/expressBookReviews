@@ -8,14 +8,14 @@ let users = [];
 
 const isValid = (username)=>{ //returns boolean
 //write code to check is the username is valid
-}
+};
 
 const authenticatedUser = (username,password)=>
 { //returns boolean
 //write code to check if username and password match the one we have in records.
   let validUsers = users.filter((user)=>
                     {
-                      return (user.username === username && user.password === password)
+                      return (user.username === username && user.password === password);
                     });
       if(validUsers.length > 0)
       {
@@ -23,7 +23,7 @@ const authenticatedUser = (username,password)=>
       } else {
         return false;
       }
-}
+};
 
 //only registered users can login
 regd_users.post("/login", (req,res) => {
@@ -43,7 +43,7 @@ regd_users.post("/login", (req,res) => {
 
         req.session.authorization = {
           accessToken,username
-        }
+        };
         return res.status(200).send("Customer successfully logged in");
       } else {
         return res.status(208).json({message: "Invalid Login. Check username and password"});

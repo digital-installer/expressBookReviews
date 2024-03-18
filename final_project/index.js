@@ -1,7 +1,7 @@
 /*jshint esversion: 8 */
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const session = require('express-session')
+const session = require('express-session');
 const customer_routes = require('./router/auth_users.js').authenticated;
 const genl_routes = require('./router/general.js').general;
 
@@ -9,14 +9,14 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}));
 
 app.use("/customer/auth/*", function auth(req,res,next)
 {
 //Write the authenication mechanism here
     if(req.session.authorization)
     {
-        token = req.session.authorization['accessToken'];
+        token = req.session.authorization.accessToken;
         jwt.verify(token, "access",(err,user)=>
         {
             if(!err){
@@ -25,13 +25,13 @@ app.use("/customer/auth/*", function auth(req,res,next)
                 next(); // this allows the request to proceed to the next middleware
             }
             else{
-                return res.status(403).json({message: "User not authenticated"})
+                return res.status(403).json({message: "User not authenticated"});
             }
         });
     }
     else
     {
-        return res.status(403).json({message: "User not logged in"})
+        return res.status(403).json({message: "User not logged in"});
     }
 });
 

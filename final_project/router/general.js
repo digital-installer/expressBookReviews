@@ -9,14 +9,14 @@ const public_users = express.Router();
 
 const doesExist = (username)=>{
   let userswithsamename = users.filter((user)=>{
-    return user.username === username
+    return user.username === username;
   });
   if(userswithsamename.length > 0){
     return true;
   } else {
     return false;
   }
-}
+};
 
 
 public_users.post("/register", (req,res) => {
@@ -45,7 +45,7 @@ public_users.get('/',function (req, res) {
 public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
   const isbn = req.params.isbn;
-  res.send(books[isbn])
+  res.send(books[isbn]);
  });
   
 // Get book details based on author
@@ -92,7 +92,7 @@ public_users.get('/review/:isbn',function (req, res) {
   //Write your code here
   //Write your code here
   const isbn = req.params.isbn;
-  res.send(books[isbn].reviews)
+  res.send(books[isbn].reviews);
 });
 
 let booksAsync;
@@ -106,7 +106,7 @@ booksAsync = new Promise((resolve , reject) =>
     }
     catch(err)
     {
-      reject(err)
+      reject(err);
     }
 });
 
@@ -120,7 +120,7 @@ booksAsync = new Promise((resolve , reject) =>
     bookObjectByISBN = books[isbn];
     return bookObjectByISBN;
   }
-}
+};
 
 //function get book by Author
 const getBookByAuthor = async (author) =>
@@ -142,7 +142,7 @@ const getBookByAuthor = async (author) =>
   return bookListByAuthor;
 
 
-}
+};
 
 //function get book by Title
 const getBookByTitle  =  async (title) =>
@@ -162,7 +162,7 @@ const getBookByTitle  =  async (title) =>
 
   return bookListByTitle;
 
-}
+};
 
 
 
