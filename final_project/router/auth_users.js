@@ -1,3 +1,4 @@
+/*jshint esversion: 8 */
 const express = require('express');
 const jwt = require('jsonwebtoken');
 let books = require("./booksdb.js");
